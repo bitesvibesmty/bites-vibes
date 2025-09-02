@@ -1,6 +1,6 @@
 # 🍫 Bites & Vibes
 
-Landing page oficial de **Bites & Vibes** — Brownies y chocolatitos caseros hechos en Monterrey, N.L. 🇲🇽
+Landing page oficial de **Bites & Vibes** — Brownies y chocolate bites caseros hechos en Monterrey, N.L. 🇲🇽
 
 ![Logo](./Logo.png)
 
@@ -12,7 +12,7 @@ Landing page oficial de **Bites & Vibes** — Brownies y chocolatitos caseros he
 ---
 
 ## 📋 Menú rápido
-- 🍫 **Fudge Brownie Bites** — $45 MXN (4 pzas)  
+- 🍫 **Fudge Brownie Bites** — $45 MXN (p/pza)  
 - 🧁 **Choco Bites** — $40 MXN (6 pzas)  
 - 🎁 **Pack Regio** — $120 MXN (combo)
 
