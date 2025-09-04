@@ -77,6 +77,7 @@
             <option value="Nutella">Nutella</option>
             <option value="Flan">Flan</option>
             <option value="Mixto">Mixto</option>
+            <option value="Sabor a elegir">Sabor a elegir (+$30)</option>
           </select>
 
           <!-- Cantidad -->
@@ -109,7 +110,7 @@
             <option value="Almendra">Almendra</option>
             <option value="Nuez">Nuez</option>
             <option value="Nutella">Nutella</option>
-            <option value="Mixto">Mixto</option>
+            <option value="Sabor a elegir">Sabor a elegir (+$30)</option>
           </select>
 
           <!-- Cantidad -->
@@ -254,7 +255,22 @@
       bites: { "3p": 77, "6p": 111, "9p": 166 },
       pack: 222
     };
-
+    
+    const EXTRA_PRICES = {
+     fudge: {
+      "Oreo": 20,
+      "Nutella": 20,
+      "Flan": 15,
+      "Sabor a elegir": 30
+     },
+      bites: {
+      "Almendra": 15,
+      "Nuez": 15,
+      "Nutella": 0,   // ya incluido en el base
+      "Sabor a elegir": 30
+      }
+     };
+    
     const cart = [];
 
     const fmt = n => `$${Number(n||0).toLocaleString('es-MX')} MXN`;
@@ -265,7 +281,9 @@
       const qty = parseInt(document.getElementById('fudge-qty').value,10);
       if(!size || !sabor || qty<1) return alert("Completa tamaño, sabor y cantidad");
 
-      const unit = PRICES.fudge[size];
+      const base = PRICES.fudge[size];
+      const extra = EXTRA_PRICES.fudge[sabor] || 0;
+      const unit = base + extra;
       cart.push({
         producto:"Fudge Brownies",
         variante:size,       // guardamos la variante por separado
@@ -284,6 +302,8 @@
       if(!pack || !sabor || qty<1) return alert("Completa paquete, sabor y cantidad");
 
       const unit = PRICES.bites[pack];
+      const extra = EXTRA_PRICES.bites[sabor] || 0;
+      const unit = base + extra;
       cart.push({
         producto:"Brownie Bites",
         variante:pack,       // 3p/6p/9p
