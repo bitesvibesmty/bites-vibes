@@ -17,6 +17,7 @@
       </div>
       <nav class="hidden md:flex items-center gap-6 text-sm">
         <a href="#menu" class="hover:opacity-80">Menú</a>
+        <a href="#Lista de Productos" class="hover:opacity-80">Lista de Productos</a>
         <a href="#como" class="hover:opacity-80">Cómo pedir</a>
         <a href="#nosotros" class="hover:opacity-80">Nosotros</a>
       </nav>
@@ -35,7 +36,7 @@
           Brownies & <span class="underline decoration-[#35d6c4] decoration-[6px] underline-offset-8">bites</span> hechos en MTY
         </h1>
         <p class="mt-4 text-[17px] opacity-80">
-          Fudge húmedo, toppings reales y vibes street. Perfectos para compartir o regalar.
+          Fudge húmedo, toppings deliciosos y vibes street. Perfectos para compartir o regalar, disfrutando su sabor en cada mordida.
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <a href="#menu" class="rounded-2xl px-5 py-3 bg-black text-white">Ver menú</a>
@@ -55,18 +56,42 @@
       <h2 class="text-2xl md:text-3xl font-extrabold mb-8">Menú</h2>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <!-- Fudge Brownie Bites -->
+        <!-- Fudge Brownies -->
         <article class="rounded-3xl p-4 border border-black/10 bg-white shadow-sm hover:shadow-lg transition">
           <div class="relative h-44 rounded-2xl overflow-hidden">
             <img src="fudge-bites.png" alt="Fudge Brownies" class="w-full h-full object-cover" />
             <span class="absolute top-3 left-3 text-[11px] tracking-wide bg-[#3b2f2f] text-white px-2 py-1 rounded-full">Top</span>
           </div>
           <h3 class="mt-4 font-bold text-lg">Fudge Brownies</h3>
-          <p class="text-sm opacity-80">Brownies estilo fudge, húmedos y densos (individual, pareja o grupo).</p>
+          <p class="text-sm opacity-80">Brownies estilo fudge, suavecitos, húmedos y densos para ti, tu pareja y para compartir.</p>
+
+          <!-- Selector de sabor -->
+          <label for="sabor-fudge" class="mt-4 block text-sm font-medium">Sabor</label>
+          <select id="sabor-fudge" class="mt-2 w-full rounded-xl border border-black/15 p-2 bg-white">
+            <option value="">Selecciona una opción…</option>
+            <option value="originales">Originales</option>
+            <option value="oreo">Oreo</option>
+            <option value="nutella">Nutella</option>
+            <option value="flan">Flan</option>
+            <option value="mixto">Mixto</option>
+          </select>
+
+          <!-- Selector de cantidad -->
+          <label for="qty-fudge" class="mt-3 block text-sm font-medium">Cantidad</label>
+          <input id="qty-fudge" type="number" min="1" value="1"
+                 class="mt-2 w-full rounded-xl border border-black/15 p-2 bg-white" />
+
           <div class="mt-4 flex items-center justify-between">
             <span class="font-bold">$55 MXN (p/pza)</span>
-            <a href="https://wa.me/528132569289?text=Hola!%20Quiero%20Fudge%20Brownies"
-               class="text-sm rounded-xl px-3 py-2 bg-[#35d6c4] font-semibold hover:opacity-90">Pedir</a>
+            <button
+              type="button"
+              class="text-sm rounded-xl px-3 py-2 bg-[#35d6c4] font-semibold hover:opacity-90"
+              data-producto="Fudge Brownies"
+              data-select="#sabor-fudge"
+              data-qty="#qty-fudge"
+              onclick="enviarWhatsApp(this)">
+              Pedir
+            </button>
           </div>
         </article>
 
@@ -77,11 +102,35 @@
             <span class="absolute top-3 left-3 text-[11px] tracking-wide bg-[#3b2f2f] text-white px-2 py-1 rounded-full">Nuevo</span>
           </div>
           <h3 class="mt-4 font-bold text-lg">Brownie Bites</h3>
-          <p class="text-sm opacity-80">Brownie bites con topping a elegir (nuez, almendra, galleta) + $15 ingrediente extra.</p>
+          <p class="text-sm opacity-80">Brownie bites con topping a elegir + $15 ingrediente extra.</p>
+
+          <!-- Selector de sabor -->
+          <label for="sabor-bites" class="mt-4 block text-sm font-medium">Sabor</label>
+          <select id="sabor-bites" class="mt-2 w-full rounded-xl border border-black/15 p-2 bg-white">
+            <option value="">Selecciona una opción…</option>
+            <option value="originales">Originales</option>
+            <option value="oreo">Almendra</option>
+            <option value="nutella">Nuez</option>
+            <option value="flan">Nutella</option>
+            <option value="mixto">Mixto</option>
+          </select>
+
+          <!-- Selector de cantidad -->
+          <label for="qty-bites" class="mt-3 block text-sm font-medium">Cantidad</label>
+          <input id="qty-bites" type="number" min="1" value="1"
+                 class="mt-2 w-full rounded-xl border border-black/15 p-2 bg-white" />
+
           <div class="mt-4 flex items-center justify-between">
             <span class="font-bold">$77 MXN (3 pzas)</span>
-            <a href="https://wa.me/528132569289?text=Hola!%20Quiero%20Brownie%20Bites"
-               class="text-sm rounded-xl px-3 py-2 bg-[#35d6c4] font-semibold hover:opacity-90">Pedir</a>
+            <button
+              type="button"
+              class="text-sm rounded-xl px-3 py-2 bg-[#35d6c4] font-semibold hover:opacity-90"
+              data-producto="Brownie Bites (3 pzas)"
+              data-select="#sabor-bites"
+              data-qty="#qty-bites"
+              onclick="enviarWhatsApp(this)">
+              Pedir
+            </button>
           </div>
         </article>
 
@@ -99,7 +148,6 @@
                class="text-sm rounded-xl px-3 py-2 bg-[#35d6c4] font-semibold hover:opacity-90">Pedir</a>
           </div>
         </article>
-
       </div>
     </div>
   </section>
@@ -109,7 +157,7 @@
     <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6">
       <div class="rounded-3xl border border-black/10 bg-white p-6">
         <h4 class="font-bold text-lg">1. Elige tus bites</h4>
-        <p class="text-sm opacity-80">Selecciona sabores y cantidad (combos disponibles).</p>
+        <p class="text-sm opacity-80">Selecciona sabores y cantidad    **tip: Revisa combos disponibles.</p>
       </div>
       <div class="rounded-3xl border border-black/10 bg-white p-6">
         <h4 class="font-bold text-lg">2. Escríbenos</h4>
@@ -134,6 +182,44 @@
       <img src="nosotros.png" alt="Nosotros" class="rounded-3xl shadow-md" />
     </div>
   </section>
+  
+  <!-- Lista de Productos / Menú en imagen -->
+<section id="Lista de Productos" class="py-16 bg-white/70">
+  <div class="mx-auto max-w-4xl px-4">
+    <div class="flex items-center justify-between gap-4 mb-6">
+      <h2 class="text-2xl md:text-3xl font-extrabold">Lista de Productos</h2>
+      <a href="menu-bitesvibes.png" download
+         class="rounded-xl px-4 py-2 border border-black/15 hover:bg-black/5 text-sm">
+        Descargar menú
+      </a>
+    </div>
+
+    <!-- Imagen responsive con opción de ampliar -->
+    <figure>
+      <img
+        src="menu-bitesvibes.png"
+        alt="Lista de Productos de precios: Fudge Brownie, Brownie Bites y Pack Regio"
+        loading="lazy"
+        class="w-full rounded-2xl border border-black/10 shadow-md cursor-zoom-in"
+        onclick="document.getElementById('dlg-Lista de Productos').showModal()"
+      />
+      <figcaption class="mt-3 text-sm opacity-70">
+        Toca la imagen para ampliarla.
+      </figcaption>
+    </figure>
+  </div>
+
+  <!-- Modal fullscreen -->
+  <dialog id="dlg-Lista de Productos" class="backdrop:bg-black/60 p-0 rounded-2xl max-w-[95vw]">
+    <div class="relative">
+      <button aria-label="Cerrar"
+        class="absolute right-2 top-2 z-10 rounded-full px-3 py-1 text-sm bg-white/90 border border-black/10 hover:bg-white"
+        onclick="document.getElementById('dlg-Lista de Productos').close()">Cerrar ✕</button>
+      <img src="menu-bitesvibes.png" alt="Lista de Productos ampliada"
+           class="max-h-[85vh] w-auto md:max-w-[90vw] rounded-2xl" />
+    </div>
+  </dialog>
+</section>
 
   <!-- Footer -->
   <footer class="py-10">
@@ -158,6 +244,37 @@
     </div>
     <p class="text-center text-xs opacity-50 mt-6">© 2025 Bites & Vibes. Todos los derechos reservados.</p>
   </footer>
+
+  <!-- Script: Armar mensaje de WhatsApp con sabor y cantidad -->
+  <script>
+    const WHATSAPP_NUMBER = "528132569289";
+
+    function enviarWhatsApp(btn) {
+      const producto = btn.getAttribute("data-producto");
+      const select = document.querySelector(btn.getAttribute("data-select"));
+      const qtyInput = document.querySelector(btn.getAttribute("data-qty"));
+
+      if (!select || !qtyInput) return;
+
+      const sabor = (select.value || "").trim();
+      const qty = parseInt(qtyInput.value, 10);
+
+      if (!sabor) {
+        alert("Por favor, selecciona un sabor antes de continuar 🍫");
+        select.focus();
+        return;
+      }
+      if (!qty || qty < 1) {
+        alert("Indica una cantidad válida (mínimo 1) 🧁");
+        qtyInput.focus();
+        return;
+      }
+
+      const mensaje = `Hola Bites & Vibes! Quiero pedir:\n• ${producto}\n• Sabor: ${sabor}\n• Cantidad: ${qty}\n¿Me confirmas tiempo de entrega y total?`;
+      const url = `https://wa.me/${8132569289}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, "_blank");
+    }
+  </script>
 
 </body>
 </html>
