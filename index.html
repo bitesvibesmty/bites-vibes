@@ -73,9 +73,9 @@
           <select id="fudge-sabor" class="mt-2 w-full rounded-xl border p-2 bg-white">
             <option value="">Selecciona...</option>
             <option value="Originales">Originales</option>
-            <option value="Oreo">Oreo</option>
-            <option value="Nutella">Nutella</option>
-            <option value="Flan">Flan</option>
+            <option value="Oreo">Oreo (+$20)</option>
+            <option value="Nutella">Nutella (+$20)</option>
+            <option value="Flan">Flan (+$15)</option>
             <option value="Mixto">Mixto</option>
             <option value="Sabor a elegir">Sabor a elegir (+$30)</option>
           </select>
@@ -107,8 +107,8 @@
           <label class="mt-3 block text-sm font-medium">Sabor</label>
           <select id="bites-sabor" class="mt-2 w-full rounded-xl border p-2 bg-white">
             <option value="">Selecciona...</option>
-            <option value="Almendra">Almendra</option>
-            <option value="Nuez">Nuez</option>
+            <option value="Almendra">Almendra (+$15)</option>
+            <option value="Nuez">Nuez (+$15)</option>
             <option value="Nutella">Nutella</option>
             <option value="Sabor a elegir">Sabor a elegir (+$30)</option>
           </select>
@@ -250,29 +250,32 @@
   <script>
     const WHATSAPP_NUMBER = "528132569289";
 
+    // Precios base
     const PRICES = {
       fudge: { individual: 55, mediano: 166, grande: 255 },
       bites: { "3p": 77, "6p": 111, "9p": 166 },
       pack: 222
     };
     
+    // Costos extra por sabor
     const EXTRA_PRICES = {
-     fudge: {
-      "Oreo": 20,
-      "Nutella": 20,
-      "Flan": 15,
-      "Sabor a elegir": 30
-     },
+      fudge: {
+        "Oreo": 20,
+        "Nutella": 20,
+        "Flan": 15,
+        "Sabor a elegir": 30,
+        "Originales": 0,
+        "Mixto": 0
+      },
       bites: {
-      "Almendra": 15,
-      "Nuez": 15,
-      "Nutella": 0,   // ya incluido en el base
-      "Sabor a elegir": 30
+        "Almendra": 15,
+        "Nuez": 15,
+        "Sabor a elegir": 30,
+        "Nutella": 0
       }
-     };
+    };
     
     const cart = [];
-
     const fmt = n => `$${Number(n||0).toLocaleString('es-MX')} MXN`;
 
     function agregarFudge(){
@@ -284,9 +287,10 @@
       const base = PRICES.fudge[size];
       const extra = EXTRA_PRICES.fudge[sabor] || 0;
       const unit = base + extra;
+
       cart.push({
         producto:"Fudge Brownies",
-        variante:size,       // guardamos la variante por separado
+        variante:size,
         sabor,
         qty,
         unit,
@@ -301,12 +305,13 @@
       const qty = parseInt(document.getElementById('bites-qty').value,10);
       if(!pack || !sabor || qty<1) return alert("Completa paquete, sabor y cantidad");
 
-      const unit = PRICES.bites[pack];
+      const base = PRICES.bites[pack];
       const extra = EXTRA_PRICES.bites[sabor] || 0;
       const unit = base + extra;
+
       cart.push({
         producto:"Brownie Bites",
-        variante:pack,       // 3p/6p/9p
+        variante:pack,  // 3p/6p/9p
         sabor,
         qty,
         unit,
