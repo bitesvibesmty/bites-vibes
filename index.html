@@ -225,21 +225,38 @@
     <p class="text-center text-xs opacity-50 mt-6">© 2025 Bites & Vibes. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- Carrito / Total (pegajoso) -->
-  <div id="cartbar" class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-black/10 p-4 z-50">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-      <!-- Datos opcionales del cliente -->
-     <div class="w-full flex flex-col xs:flex-row gap-1">
-  <input id="cliente-nombre" 
-         type="text" 
-         placeholder="Tu nombre (opcional)"
-         class="rounded-lg border border-black/15 px-2 py-1 bg-white flex-1 min-w-0 text-sm" />
+  <!-- Carrito / Total (colapsable) -->
+<div id="cartbar"
+     class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-black/10 z-50 
+            transition-all duration-300 overflow-hidden h-12">
 
-  <input id="cliente-fecha" 
-         type="date" 
-         placeholder="Fecha de entrega (opcional)"
-         class="rounded-lg border border-black/15 px-2 py-1 bg-white flex-1 min-w-0 text-sm" />
+  <!-- Vista mini -->
+  <div id="cart-mini" class="flex justify-between items-center px-4 py-2 cursor-pointer">
+    <span id="cart-mini-text" class="text-sm opacity-70">Aquí aparecerá tu orden…</span>
+    <span id="cart-mini-total" class="font-bold text-sm">$0 MXN</span>
+  </div>
+
+  <!-- Vista expandida -->
+  <div id="cart-full" class="hidden px-4 py-3 space-y-3">
+    <div class="flex flex-col sm:flex-row gap-2">
+      <input id="cliente-nombre" type="text" placeholder="Tu nombre (opcional)"
+             class="rounded-xl border border-black/15 p-2 bg-white w-full sm:w-64" />
+      <input id="cliente-fecha" type="date"
+             class="rounded-xl border border-black/15 p-2 bg-white w-full sm:w-56" />
+    </div>
+
+    <div id="cart-items" class="text-sm opacity-70">Tu pedido aparecerá aquí…</div>
+
+    <div class="flex justify-between items-center">
+      <div id="cart-total" class="font-bold text-lg">$0 MXN</div>
+      <button onclick="enviarPedido()" 
+              class="rounded-xl px-4 py-2 bg-[#3b2f2f] text-white hover:opacity-90">
+        Enviar pedido
+      </button>
+    </div>
+  </div>
 </div>
+
 
 
       <!-- Items -->
@@ -304,6 +321,8 @@
         subtotal: unit*qty
       });
       renderCart();
+      expandCart();
+
     }
 
     function agregarBites(){
@@ -325,6 +344,8 @@
         subtotal: unit*qty
       });
       renderCart();
+      expandCart();
+
     }
 
     function agregarPack(){
@@ -338,6 +359,7 @@
         subtotal: unit
       });
       renderCart();
+      expandCart();
     }
 
     function renderCart(){
@@ -480,6 +502,47 @@
         errorEl.classList.remove('hidden');
         console.log(err);
       }
+      // --- Carrito colapsable ---
+let cartExpanded = false;
+const cartbar = document.getElementById('cartbar');
+const cartMini = document.getElementById('cart-mini');
+const cartFull = document.getElementById('cart-full');
+const cartMiniText = document.getElementById('cart-mini-text');
+const cartMiniTotal = document.getElementById('cart-mini-total');
+
+cartMini.addEventListener('click', toggleCart);
+
+function toggleCart(){
+  cartExpanded = !cartExpanded;
+  if(cartExpanded){
+    cartFull.classList.remove('hidden');
+    cartbar.classList.add('h-auto');
+    cartbar.classList.remove('h-12');
+  } else {
+    cartFull.classList.add('hidden');
+    cartbar.classList.remove('h-auto');
+    cartbar.classList.add('h-12');
+  }
+}
+
+// Abre el carrito automáticamente al agregar algo
+function expandCart(){
+  if(!cartExpanded) toggleCart();
+}
+
+// Modifica renderCart para actualizar también la vista mini
+const originalRenderCart = renderCart;
+renderCart = function(){
+  originalRenderCart();
+
+  // Actualizar mini bar
+  const total = cart.reduce((s,it)=>s+it.subtotal,0);
+  cartMiniTotal.textContent = fmt(total);
+  cartMiniText.textContent = cart.length > 0 
+    ? `${cart.length} producto${cart.length>1?'s':''} en tu pedido`
+    : "Aquí aparecerá tu orden…";
+};
+
     }
   </script>
 
