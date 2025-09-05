@@ -258,293 +258,270 @@
 </div>
 
 
-
-      <!-- Items -->
-      <div id="cart-items" class="text-sm opacity-60 w-full md:w-auto">Tu pedido aparecerá aquí…</div>
-
-      <!-- Total + enviar -->
-      <div class="flex gap-4 items-center w-full md:w-auto justify-between md:justify-end">
-        <div id="cart-total" class="font-bold text-lg">$0 MXN</div>
-        <button onclick="enviarPedido()" class="rounded-xl px-4 py-2 bg-[#3b2f2f] text-white hover:opacity-90">Enviar pedido</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Scripts principales -->
   <script>
-    const WHATSAPP_NUMBER = "528132569289";
+  const WHATSAPP_NUMBER = "528132569289";
 
-    // Precios base
-    const PRICES = {
-      fudge: { individual: 55, mediano: 166, grande: 255 },
-      bites: { "3p": 77, "6p": 111, "9p": 166 },
-      pack: 222
-    };
-    
-    // Costos extra por sabor
-    const EXTRA_PRICES = {
-      fudge: {
-        "Oreo": 20,
-        "Nutella": 20,
-        "Flan": 15,
-        "Sabor a elegir": 30,
-        "Originales": 0,
-        "Mixto": 0
-      },
-      bites: {
-        "Almendra": 15,
-        "Nuez": 15,
-        "Sabor a elegir": 30,
-        "Nutella": 0
-      }
-    };
-    
-    const cart = [];
-    const fmt = n => `$${Number(n||0).toLocaleString('es-MX')} MXN`;
-
-    function agregarFudge(){
-      const size = document.getElementById('fudge-size').value;
-      const sabor = document.getElementById('fudge-sabor').value;
-      const qty = parseInt(document.getElementById('fudge-qty').value,10);
-      if(!size || !sabor || qty<1) return alert("Completa tamaño, sabor y cantidad");
-
-      const base = PRICES.fudge[size];
-      const extra = EXTRA_PRICES.fudge[sabor] || 0;
-      const unit = base + extra;
-
-      cart.push({
-        producto:"Fudge Brownies",
-        variante:size,
-        sabor,
-        qty,
-        unit,
-        subtotal: unit*qty
-      });
-      renderCart();
-      expandCart();
-
+  // Precios base
+  const PRICES = {
+    fudge: { individual: 55, mediano: 166, grande: 255 },
+    bites: { "3p": 77, "6p": 111, "9p": 166 },
+    pack: 222
+  };
+  
+  // Costos extra por sabor
+  const EXTRA_PRICES = {
+    fudge: {
+      "Oreo": 20,
+      "Nutella": 20,
+      "Flan": 15,
+      "Sabor a elegir": 30,
+      "Originales": 0,
+      "Mixto": 0
+    },
+    bites: {
+      "Almendra": 15,
+      "Nuez": 15,
+      "Sabor a elegir": 30,
+      "Nutella": 20 // ← corrige a +20
     }
+  };
 
-    function agregarBites(){
-      const pack = document.getElementById('bites-pack').value;
-      const sabor = document.getElementById('bites-sabor').value;
-      const qty = parseInt(document.getElementById('bites-qty').value,10);
-      if(!pack || !sabor || qty<1) return alert("Completa paquete, sabor y cantidad");
+  // Estado del carrito (global)
+  const cart = [];
+  const fmt = n => `$${Number(n||0).toLocaleString('es-MX')} MXN`;
 
-      const base = PRICES.bites[pack];
-      const extra = EXTRA_PRICES.bites[sabor] || 0;
-      const unit = base + extra;
+  // --- Barra colapsable ---
+  let cartExpanded = false;
+  const cartbar      = document.getElementById('cartbar');
+  const cartMini     = document.getElementById('cart-mini');
+  const cartFull     = document.getElementById('cart-full');
+  const cartMiniText = document.getElementById('cart-mini-text');
+  const cartMiniTotal= document.getElementById('cart-mini-total');
 
-      cart.push({
-        producto:"Brownie Bites",
-        variante:pack,  // 3p/6p/9p
-        sabor,
-        qty,
-        unit,
-        subtotal: unit*qty
-      });
-      renderCart();
-      expandCart();
+  if (cartMini) cartMini.addEventListener('click', toggleCart);
 
+  function toggleCart(){
+    cartExpanded = !cartExpanded;
+    if(cartExpanded){
+      cartFull.classList.remove('hidden');
+      cartbar.classList.add('h-auto');
+      cartbar.classList.remove('h-12');
+    } else {
+      cartFull.classList.add('hidden');
+      cartbar.classList.remove('h-auto');
+      cartbar.classList.add('h-12');
     }
-
-    function agregarPack(){
-      const unit = PRICES.pack;
-      cart.push({
-        producto:"Pack Regio",
-        variante:"combo",
-        sabor:"-",
-        qty:1,
-        unit,
-        subtotal: unit
-      });
-      renderCart();
-      expandCart();
-    }
-
-    function renderCart(){
-  const cont = document.getElementById('cart-items');
-  if(cart.length===0){
-    cont.textContent="Tu pedido aparecerá aquí…";
-    document.getElementById('cart-total').textContent="$0 MXN";
-    return;
   }
-  cont.innerHTML = cart.map((it,i)=>`
-    <div class="mb-1">
-      ${it.producto}${it.variante ? ' ('+it.variante+')':''}
-      ${it.sabor!=="-"? ' — '+it.sabor:''}
-      — x${it.qty}
-      = <span class="font-semibold">${fmt(it.subtotal)}</span>
-      <button onclick="cart.splice(${i},1);renderCart()" class="ml-2 text-xs underline">Quitar</button>
-    </div>
-  `).join("");
-  const total = cart.reduce((s,it)=>s+it.subtotal,0);
-  document.getElementById('cart-total').textContent = fmt(total);
 
-  // 👇 Mover la vista hacia el carrito
-  document.getElementById('cartbar').scrollIntoView({
-    behavior: 'smooth',
-    block: 'nearest'
-  });
-}
+  // Abre el carrito automáticamente al agregar algo
+  function expandCart(){
+    if(!cartExpanded) toggleCart();
+  }
 
+  // Render del carrito (actualiza mini y full)
+  function renderCart(){
+    const cont = document.getElementById('cart-items');
+    if(!cont) return;
 
-  // 👇 Mover la vista hacia el carrito
-  document.getElementById('cartbar').scrollIntoView({
-    behavior: 'smooth',
-    block: 'nearest'
-  });
-
-
+    if(cart.length===0){
+      cont.textContent="Tu pedido aparecerá aquí…";
+      document.getElementById('cart-total').textContent="$0 MXN";
+      cartMiniTotal.textContent="$0 MXN";
+      cartMiniText.textContent="Aquí aparecerá tu orden…";
+      return;
     }
 
-    // Generar un Order ID (ej. BV-9F3K2T)
-    function generarOrderId(){
-      return 'BV-' + Math.random().toString(36).slice(2, 8).toUpperCase();
-    }
+    cont.innerHTML = cart.map((it,i)=>`
+      <div class="mb-1">
+        ${it.producto}${it.variante ? ' ('+it.variante+')':''}
+        ${it.sabor!=="-"? ' — '+it.sabor:''}
+        — x${it.qty}
+        = <span class="font-semibold">${fmt(it.subtotal)}</span>
+        <button onclick="cart.splice(${i},1);renderCart()" class="ml-2 text-xs underline">Quitar</button>
+      </div>
+    `).join("");
 
-    async function enviarPedido(){
-      if(cart.length===0) return alert("Carrito vacío");
+    const total = cart.reduce((s,it)=>s+it.subtotal,0);
+    document.getElementById('cart-total').textContent = fmt(total);
 
-      const orderId = generarOrderId();
-      const total = cart.reduce((s,it)=>s+it.subtotal,0);
-      const nombre = (document.getElementById('cliente-nombre')?.value || '').trim();
-      const fecha  = (document.getElementById('cliente-fecha')?.value || '').trim();
+    // Actualizar mini bar
+    cartMiniTotal.textContent = fmt(total);
+    cartMiniText.textContent = cart.length > 0 
+      ? `${cart.length} producto${cart.length>1?'s':''} en tu pedido`
+      : "Aquí aparecerá tu orden…";
 
-      // Mensaje de WhatsApp
-      let msg = `Hola Bites & Vibes! Quiero pedir (N° de orden: ${orderId}):\n`;
-      cart.forEach(it=>{
-        msg += `• ${it.producto}${it.variante?` (${it.variante})`:''}${(it.sabor && it.sabor!=='-') ? ' — Sabor: '+it.sabor : ''} — Cantidad: ${it.qty} — Subtotal: ${fmt(it.subtotal)}\n`;
-      });
-      msg += `\nTotal: ${fmt(total)}`;
-      if (nombre) msg += `\nNombre: ${nombre}`;
-      if (fecha)  msg += `\nFecha de entrega deseada: ${fecha}`;
-      msg += `\n¿Me confirmas tiempo de entrega y total?`;
+    // Mover la vista hacia el carrito
+    cartbar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 
-      // Abrir WhatsApp
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`,"_blank");
+  // --- Agregar productos ---
+  function agregarFudge(){
+    const size = document.getElementById('fudge-size').value;
+    const sabor = document.getElementById('fudge-sabor').value;
+    const qty = parseInt(document.getElementById('fudge-qty').value,10);
+    if(!size || !sabor || qty<1) return alert("Completa tamaño, sabor y cantidad");
 
-      // Registrar en Google Sheets
-      try {
-        const endpoint = window.SHEETS_WEBAPP_URL || "";
-        if (endpoint){
-          const payload = {
-            timestamp: new Date().toISOString(),
-            source: "web",
-            total,
-            order_id: orderId,
-            cliente: nombre,
-            contacto: "WhatsApp",
-            fecha_entrega: fecha,
-            status: "Pendiente",
-            items: cart.map(it => ({
-              producto: it.producto,
-              variante: it.variante || "",
-              sabor: it.sabor,
-              cantidad: it.qty,
-              unit: it.unit,
-              subtotal: it.subtotal
-            }))
-          };
+    const base = PRICES.fudge[size];
+    const extra = EXTRA_PRICES.fudge[sabor] || 0;
+    const unit = base + extra;
 
-          await fetch(endpoint, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-        }
-      } catch (e){
-        console.log('No se pudo registrar en la hoja:', e);
+    cart.push({
+      producto:"Fudge Brownies",
+      variante:size,
+      sabor,
+      qty,
+      unit,
+      subtotal: unit*qty
+    });
+    renderCart();
+    expandCart();
+  }
+
+  function agregarBites(){
+    const pack = document.getElementById('bites-pack').value;
+    const sabor = document.getElementById('bites-sabor').value;
+    const qty = parseInt(document.getElementById('bites-qty').value,10);
+    if(!pack || !sabor || qty<1) return alert("Completa paquete, sabor y cantidad");
+
+    const base = PRICES.bites[pack];
+    const extra = EXTRA_PRICES.bites[sabor] || 0;
+    const unit = base + extra;
+
+    cart.push({
+      producto:"Brownie Bites",
+      variante:pack,
+      sabor,
+      qty,
+      unit,
+      subtotal: unit*qty
+    });
+    renderCart();
+    expandCart();
+  }
+
+  function agregarPack(){
+    const unit = PRICES.pack;
+    cart.push({
+      producto:"Pack Regio",
+      variante:"combo",
+      sabor:"-",
+      qty:1,
+      unit,
+      subtotal: unit
+    });
+    renderCart();
+    expandCart();
+  }
+
+  // Generar un Order ID (ej. BV-9F3K2T)
+  function generarOrderId(){
+    return 'BV-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+  }
+
+  // Enviar pedido
+  async function enviarPedido(){
+    if(cart.length===0) return alert("Carrito vacío");
+
+    const orderId = generarOrderId();
+    const total = cart.reduce((s,it)=>s+it.subtotal,0);
+    const nombre = (document.getElementById('cliente-nombre')?.value || '').trim();
+    const fecha  = (document.getElementById('cliente-fecha')?.value || '').trim();
+
+    // Mensaje de WhatsApp
+    let msg = `Hola Bites & Vibes! Quiero pedir (N° de orden: ${orderId}):\n`;
+    cart.forEach(it=>{
+      msg += `• ${it.producto}${it.variante?` (${it.variante})`:''}${(it.sabor && it.sabor!=='-') ? ' — Sabor: '+it.sabor : ''} — Cantidad: ${it.qty} — Subtotal: ${fmt(it.subtotal)}\n`;
+    });
+    msg += `\nTotal: ${fmt(total)}`;
+    if (nombre) msg += `\nNombre: ${nombre}`;
+    if (fecha)  msg += `\nFecha de entrega deseada: ${fecha}`;
+    msg += `\n¿Me confirmas tiempo de entrega y total?`;
+
+    // Abrir WhatsApp
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`,"_blank");
+
+    // Registrar en Google Sheets
+    try {
+      const endpoint = window.SHEETS_WEBAPP_URL || "";
+      if (endpoint){
+        const payload = {
+          timestamp: new Date().toISOString(),
+          source: "web",
+          total,
+          order_id: orderId,
+          cliente: nombre,
+          contacto: "WhatsApp",
+          fecha_entrega: fecha,
+          status: "Pendiente",
+          items: cart.map(it => ({
+            producto: it.producto,
+            variante: it.variante || "",
+            sabor: it.sabor,
+            cantidad: it.qty,
+            unit: it.unit,
+            subtotal: it.subtotal
+          }))
+        };
+
+        await fetch(endpoint, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
       }
+    } catch (e){
+      console.log('No se pudo registrar en la hoja:', e);
     }
+  }
 
-    // RASTREO
-    async function rastrearPedido(){
-      const order = (document.getElementById('track-order').value || '').trim().toUpperCase();
-      const errorEl = document.getElementById('track-error');
-      const wrap = document.getElementById('track-result');
-      errorEl.classList.add('hidden');
-      wrap.classList.add('hidden');
+  // RASTREO
+  async function rastrearPedido(){
+    const order = (document.getElementById('track-order').value || '').trim().toUpperCase();
+    const errorEl = document.getElementById('track-error');
+    const wrap = document.getElementById('track-result');
+    errorEl.classList.add('hidden');
+    wrap.classList.add('hidden');
 
-      if (!order) {
-        errorEl.textContent = 'Escribe tu número de orden.';
+    if (!order) {
+      errorEl.textContent = 'Escribe tu número de orden.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    try {
+      const res = await fetch(`${window.SHEETS_WEBAPP_URL}?order=${encodeURIComponent(order)}`);
+      const data = await res.json();
+      if (!data.ok) {
+        errorEl.textContent = data.error || 'Orden no encontrada.';
         errorEl.classList.remove('hidden');
         return;
       }
-      try {
-        const res = await fetch(`${window.SHEETS_WEBAPP_URL}?order=${encodeURIComponent(order)}`);
-        const data = await res.json();
-        if (!data.ok) {
-          errorEl.textContent = data.error || 'Orden no encontrada.';
-          errorEl.classList.remove('hidden');
-          return;
-        }
-        document.getElementById('tr-orden').textContent  = data.order_id || order;
-        document.getElementById('tr-cliente').textContent = data.cliente || '—';
-        document.getElementById('tr-fecha').textContent   = data.fecha_entrega || '—';
-        document.getElementById('tr-status').textContent  = data.status || 'Pendiente';
-        document.getElementById('tr-total').textContent   = fmt(data.total || 0);
+      document.getElementById('tr-orden').textContent  = data.order_id || order;
+      document.getElementById('tr-cliente').textContent = data.cliente || '—';
+      document.getElementById('tr-fecha').textContent   = data.fecha_entrega || '—';
+      document.getElementById('tr-status').textContent  = data.status || 'Pendiente';
+      document.getElementById('tr-total').textContent   = fmt(data.total || 0);
 
-        const ul = document.getElementById('tr-items');
-        ul.innerHTML = '';
-        (data.items || []).forEach(it => {
-          const li = document.createElement('li');
-          const varTxt = it.variante ? ` (${it.variante})` : '';
-          const sabTxt = it.sabor ? ` — Sabor: ${it.sabor}` : '';
-          li.textContent = `${it.producto}${varTxt}${sabTxt} — x${it.cantidad} — Subtotal: ${fmt(it.subtotal)}`;
-          ul.appendChild(li);
-        });
+      const ul = document.getElementById('tr-items');
+      ul.innerHTML = '';
+      (data.items || []).forEach(it => {
+        const li = document.createElement('li');
+        const varTxt = it.variante ? ` (${it.variante})` : '';
+        const sabTxt = it.sabor ? ` — Sabor: ${it.sabor}` : '';
+        li.textContent = `${it.producto}${varTxt}${sabTxt} — x${it.cantidad} — Subtotal: ${fmt(it.subtotal)}`;
+        ul.appendChild(li);
+      });
 
-        wrap.classList.remove('hidden');
-      } catch (err){
-        errorEl.textContent = 'Error consultando el estatus. Intenta de nuevo.';
-        errorEl.classList.remove('hidden');
-        console.log(err);
-      }
-      // --- Carrito colapsable ---
-let cartExpanded = false;
-const cartbar = document.getElementById('cartbar');
-const cartMini = document.getElementById('cart-mini');
-const cartFull = document.getElementById('cart-full');
-const cartMiniText = document.getElementById('cart-mini-text');
-const cartMiniTotal = document.getElementById('cart-mini-total');
-
-cartMini.addEventListener('click', toggleCart);
-
-function toggleCart(){
-  cartExpanded = !cartExpanded;
-  if(cartExpanded){
-    cartFull.classList.remove('hidden');
-    cartbar.classList.add('h-auto');
-    cartbar.classList.remove('h-12');
-  } else {
-    cartFull.classList.add('hidden');
-    cartbar.classList.remove('h-auto');
-    cartbar.classList.add('h-12');
-  }
-}
-
-// Abre el carrito automáticamente al agregar algo
-function expandCart(){
-  if(!cartExpanded) toggleCart();
-}
-
-// Modifica renderCart para actualizar también la vista mini
-const originalRenderCart = renderCart;
-renderCart = function(){
-  originalRenderCart();
-
-  // Actualizar mini bar
-  const total = cart.reduce((s,it)=>s+it.subtotal,0);
-  cartMiniTotal.textContent = fmt(total);
-  cartMiniText.textContent = cart.length > 0 
-    ? `${cart.length} producto${cart.length>1?'s':''} en tu pedido`
-    : "Aquí aparecerá tu orden…";
-};
-
+      wrap.classList.remove('hidden');
+    } catch (err){
+      errorEl.textContent = 'Error consultando el estatus. Intenta de nuevo.';
+      errorEl.classList.remove('hidden');
+      console.log(err);
     }
-  </script>
+  }
+</script>
+
 
 </body>
 </html>
