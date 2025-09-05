@@ -341,23 +341,31 @@
     }
 
     function renderCart(){
-      const cont = document.getElementById('cart-items');
-      if(cart.length===0){
-        cont.textContent="Tu pedido aparecerá aquí…";
-        document.getElementById('cart-total').textContent="$0 MXN";
-        return;
-      }
-      cont.innerHTML = cart.map((it,i)=>`
-        <div class="mb-1">
-          ${it.producto}${it.variante ? ' ('+it.variante+')':''}
-          ${it.sabor!=="-"? ' — '+it.sabor:''}
-          — x${it.qty}
-          = <span class="font-semibold">${fmt(it.subtotal)}</span>
-          <button onclick="cart.splice(${i},1);renderCart()" class="ml-2 text-xs underline">Quitar</button>
-        </div>
-      `).join("");
-      const total = cart.reduce((s,it)=>s+it.subtotal,0);
-      document.getElementById('cart-total').textContent = fmt(total);
+  const cont = document.getElementById('cart-items');
+  if(cart.length===0){
+    cont.textContent="Tu pedido aparecerá aquí…";
+    document.getElementById('cart-total').textContent="$0 MXN";
+    return;
+  }
+  cont.innerHTML = cart.map((it,i)=>`
+    <div class="mb-1">
+      ${it.producto}${it.variante ? ' ('+it.variante+')':''}
+      ${it.sabor!=="-"? ' — '+it.sabor:''}
+      — x${it.qty}
+      = <span class="font-semibold">${fmt(it.subtotal)}</span>
+      <button onclick="cart.splice(${i},1);renderCart()" class="ml-2 text-xs underline">Quitar</button>
+    </div>
+  `).join("");
+  const total = cart.reduce((s,it)=>s+it.subtotal,0);
+  document.getElementById('cart-total').textContent = fmt(total);
+
+  // 👇 Mover la vista hacia el carrito
+  document.getElementById('cartbar').scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest'
+  });
+
+
     }
 
     // Generar un Order ID (ej. BV-9F3K2T)
